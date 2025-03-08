@@ -4,7 +4,7 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import dayjs from 'dayjs'
 
-interface QuestionProps {
+export interface QuestionProps {
   authorId: UniqueEntityId
   bestAnswerId?: UniqueEntityId
   title: string
@@ -16,7 +16,7 @@ interface QuestionProps {
 
 export class Question extends Entity<QuestionProps> {
   get authorId() {
-    return this.props.content
+    return this.props.authorId
   }
 
   get bestAnswerId() {
@@ -24,7 +24,7 @@ export class Question extends Entity<QuestionProps> {
   }
 
   get title() {
-    return this.props.content
+    return this.props.title
   }
 
   get content() {
@@ -32,15 +32,15 @@ export class Question extends Entity<QuestionProps> {
   }
 
   get slug() {
-    return this.props.content
+    return this.props.slug
   }
 
   get createAt() {
-    return this.props.content
+    return this.props.createAt
   }
 
   get updateAt() {
-    return this.props.content
+    return this.props.updateAt
   }
 
   get isNew(): boolean {
