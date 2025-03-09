@@ -35,7 +35,6 @@ describe('Fetch recent questions', () => {
       page: 1,
     })
 
-    console.log(questions)
     expect(questions).toEqual([
       expect.objectContaining({
         createAt: new Date(2022, 1, 3),
@@ -58,7 +57,6 @@ describe('Fetch recent questions', () => {
       page: 2,
     })
 
-    console.log(questions)
     expect(questions).toHaveLength(3)
   })
 })
