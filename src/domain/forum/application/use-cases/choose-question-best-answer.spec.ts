@@ -1,47 +1,59 @@
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { DeleteAnswerUseCase } from './delete-answer'
 import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository'
 import { makeAnswer } from 'test/factories/make-answer'
+import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
+import { ChooseQuestionBestAnswerUseCase } from './choose-question-best-answer'
+import { makeQuestion } from 'test/factories/make-question'
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
+let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryAnswersRepository: InMemoryAnswersRepository
-let sut: DeleteAnswerUseCase
+let sut: ChooseQuestionBestAnswerUseCase
 
 // sut = system under test
 describe('Choose Question Best Answer', () => {
   beforeEach(() => {
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository()
     inMemoryAnswersRepository = new InMemoryAnswersRepository()
-    sut = new DeleteAnswerUseCase(inMemoryAnswersRepository)
+
+    sut = new ChooseQuestionBestAnswerUseCase(
+      inMemoryQuestionsRepository,
+      inMemoryAnswersRepository,
+    )
   })
 
-  it('Should be able to delete a Answer', async () => {
-    const newAnswer = makeAnswer(
-      {
-        authorId: new UniqueEntityId('author-id'),
-      },
-      new UniqueEntityId('Answer-id'),
-    )
-    await inMemoryAnswersRepository.create(newAnswer)
+  it('Should be able to chose the questioon best answer', async () => {
+    const question = makeQuestion()
 
-    await sut.execute({
-      answerId: 'Answer-id',
-      authorId: 'author-id',
+    const answer = makeAnswer({
+      questionId: question.id,
     })
 
-    expect(inMemoryAnswersRepository.items).toHaveLength(0)
+    await inMemoryQuestionsRepository.create(question)
+    await inMemoryAnswersRepository.create(answer)
+
+    await sut.execute({
+      answerId: answer.id.toString(),
+      authorId: question.authorId.toString(),
+    })
+
+    expect(inMemoryQuestionsRepository.items[0].bestAnswerId).toEqual(answer.id)
   })
 
-  it('Should not be able to delete a Answer from another user', async () => {
-    const newAnswer = makeAnswer(
-      {
-        authorId: new UniqueEntityId('author-id'),
-      },
-      new UniqueEntityId('Answer-id'),
-    )
-    await inMemoryAnswersRepository.create(newAnswer)
+  it('shouldnt be possible to choose another users best answer', async () => {
+    const question = makeQuestion({
+      authorId: new UniqueEntityId('author-id'),
+    })
+
+    const answer = makeAnswer({
+      questionId: question.id,
+    })
+
+    await inMemoryQuestionsRepository.create(question)
+    await inMemoryAnswersRepository.create(answer)
 
     await expect(
       sut.execute({
-        answerId: 'Answer-id',
+        answerId: answer.id.toString(),
         authorId: 'author-idd',
       }),
     ).rejects.toBeInstanceOf(Error)

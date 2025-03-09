@@ -10,7 +10,7 @@ export interface QuestionProps {
   title: string
   content: string
   slug: Slug
-  createAt: Date
+  createdAt: Date
   updateAt?: Date
 }
 
@@ -36,7 +36,7 @@ export class Question extends Entity<QuestionProps> {
   }
 
   get createAt() {
-    return this.props.createAt
+    return this.props.createdAt
   }
 
   get updateAt() {
@@ -72,14 +72,14 @@ export class Question extends Entity<QuestionProps> {
   }
 
   static create(
-    props: Optional<QuestionProps, 'createAt' | 'slug'>,
+    props: Optional<QuestionProps, 'createdAt' | 'slug'>,
     id?: UniqueEntityId,
   ) {
     const question = new Question(
       {
         ...props,
         slug: props.slug ?? Slug.createFromText(props.title),
-        createdAt: new Date(),
+        createdAt: props.createdAt ?? new Date(),
       },
       id,
     )

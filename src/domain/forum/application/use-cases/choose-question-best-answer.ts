@@ -28,14 +28,14 @@ export class ChooseQuestionBestAnswerUseCase {
     }
 
     const question = await this.questionsRepository.findById(
-      answer.questionId.toValue(),
+      answer.questionId.toString(),
     )
 
     if (!question) {
       throw new Error('Question not found')
     }
 
-    if (authorId !== answer.authorId.toString()) {
+    if (authorId !== question.authorId.toString()) {
       throw new Error('Not allowed')
     }
 
