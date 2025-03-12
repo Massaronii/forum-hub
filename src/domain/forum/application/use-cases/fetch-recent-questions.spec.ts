@@ -31,11 +31,11 @@ describe('Fetch recent questions', () => {
       }),
     )
 
-    const { questions } = await sut.execute({
+    const result = await sut.execute({
       page: 1,
     })
 
-    expect(questions).toEqual([
+    expect(result.value?.questions).toEqual([
       expect.objectContaining({
         createAt: new Date(2022, 1, 3),
       }),
@@ -53,10 +53,10 @@ describe('Fetch recent questions', () => {
       await inMemoryQuestionsRepository.create(makeQuestion())
     }
 
-    const { questions } = await sut.execute({
+    const result = await sut.execute({
       page: 2,
     })
 
-    expect(questions).toHaveLength(3)
+    expect(result.value?.questions).toHaveLength(3)
   })
 })
