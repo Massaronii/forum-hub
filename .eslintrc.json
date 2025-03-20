@@ -4,7 +4,15 @@
         "plugin:vitest-globals/recommended"
     ],
     "rules": {
-        "no-useless-constructor": "off"
+        "no-useless-constructor": "off",
+        "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "{}": false
+        }
+      }
+    ]
     },
     "env": {
         "vitest-globals/env": true
