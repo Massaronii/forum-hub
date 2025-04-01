@@ -21,7 +21,7 @@ export class ChooseQuestionBestAnswerUseCase {
   constructor(
     private questionsRepository: QuestionsRepository,
     private anwsersRepository: AnswersRepository,
-  ) { }
+  ) {}
 
   async execute({
     answerId,
